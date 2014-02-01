@@ -3,73 +3,57 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.knoesis.semmed.inputformat;
+package org.knoesis.semmed.concept.inputformat;
 
 /**
  *
  * @author shreyansh
  */
 import java.io.IOException;
-import org.apache.hadoop.mapred.FileSplit;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.LineRecordReader;
-import org.apache.hadoop.mapred.RecordReader;
-import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.LineRecordReader;
 
-class NLineReader implements RecordReader<Text, Text> {
+class NLineReader extends RecordReader<NullWritable, Text> {
 
-    private LineRecordReader lineReader;
-    private LongWritable linekey;
-    private Text lineValue;
+    private final LineRecordReader lineReader = new LineRecordReader();
+    private final Text value = new Text();
+    private boolean more = true;
 
-    public NLineReader(FileSplit fileSplit, Configuration conf) throws IOException {
-
-        lineReader = new LineRecordReader(conf, fileSplit);
-        lineValue = lineReader.createValue();
-        linekey = lineReader.createKey();
+    @Override
+    public void initialize(InputSplit split, TaskAttemptContext context) throws IOException {
+        lineReader.initialize(split, context);
     }
 
     @Override
-    public boolean next(Text key, Text value) throws IOException {
-
-        if (lineReader == null) {
+    public boolean nextKeyValue() throws IOException {
+        if (!more || !lineReader.nextKeyValue()) {
+            more = false; // in case hadoop calls us an extra time
             return false;
         }
-
-        if (!lineReader.next(linekey, lineValue)) {
-            return false;
+        String line = lineReader.getCurrentValue().toString();
+        StringBuilder sb = new StringBuilder(line);
+        while ((more = lineReader.nextKeyValue()) && !(line = lineReader.getCurrentValue().toString()).isEmpty()) {
+            sb.append(line);
         }
-
-        String lines = null;
-
-        while (!lineValue.toString().equals("")) {
-            lines += lineValue.toString();
-            if (!lineReader.next(linekey, lineValue)) {
-                lineReader = null;
-                break;
-            }
+        value.set(sb.toString());
+        if (more) {
+            lineReader.nextKeyValue(); // skip second newline
         }
-
-        key.set(linekey.toString());
-        value.set(new Text(lines));
-
         return true;
     }
 
     @Override
-    public Text createKey() {
-        return new Text();
+    public NullWritable getCurrentKey() throws IOException, InterruptedException {
+        return NullWritable.get();
     }
 
     @Override
-    public Text createValue() {
-        return new Text();
-    }
-
-    @Override
-    public long getPos() throws IOException {
-        return lineReader.getPos();
+    public Text getCurrentValue() throws IOException, InterruptedException {
+        return value;
     }
 
     @Override
@@ -81,4 +65,5 @@ class NLineReader implements RecordReader<Text, Text> {
     public void close() throws IOException {
         lineReader.close();
     }
+
 }

@@ -3,33 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.knoesis.semmed.inputformat;
+package org.knoesis.semmed.concept.inputformat;
+
+import java.io.IOException;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.JobContext;
+import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 
 /**
  *
  * @author shreyansh
  */
-import java.io.IOException;
-import org.apache.hadoop.mapred.RecordReader;
-import org.apache.hadoop.mapred.InputSplit;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.Reporter;
-import org.apache.hadoop.mapred.FileSplit;
-import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-
-public class NLineInputFormat extends FileInputFormat<Text, Text> {
+public class NLineInputFormat extends FileInputFormat<NullWritable, Text> {
 
     @Override
-    protected boolean isSplitable(FileSystem fs, Path filename) {
+    public boolean isSplitable(JobContext context, Path filename) {
         return false;
     }
 
     @Override
-    public RecordReader<Text, Text> getRecordReader(
-            InputSplit split, JobConf job, Reporter reporter) throws IOException {
-        return new NLineReader((FileSplit) split, job);
+    public RecordReader<NullWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context) {
+        return new NLineReader();
     }
 }
