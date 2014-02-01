@@ -2,8 +2,15 @@
 <config>
     <db>
         <driverclass>com.mysql.jdbc.Driver</driverclass>
+        <scheme>jdbc:mysql</scheme>
+        <host>localhost</host>
+        <port>3306</port>
         <database>mydatabase</database>
         <user>myusername</user>
         <password>mypassword</password>
+        <tablename>CONCEPT_AGGREGATION</tablename>
     </db>
+    <hadoop>
+        <jobname>myjobname</jobname>
+    </hadoop>
 </config>
