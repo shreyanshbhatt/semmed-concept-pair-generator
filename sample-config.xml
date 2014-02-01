@@ -12,5 +12,6 @@
     </db>
     <hadoop>
         <jobname>myjobname</jobname>
+        <numreducers>8</numreducers>
     </hadoop>
 </config>

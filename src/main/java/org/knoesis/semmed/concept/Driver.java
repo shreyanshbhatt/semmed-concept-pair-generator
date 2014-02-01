@@ -21,6 +21,7 @@ public class Driver extends Configured implements Tool {
     private static final String DEFAULT_DB_SCHEME = "jdbc:mysql";
     private static final String DEFAULT_DB_HOST = "localhost";
     private static final int DEFAULT_DB_PORT = 3306;
+    private static final int DEFAULT_HADOOP_NUM_REDUCERS = 4;
 
     private static final String KEY_DB_DRIVER = "db.driverclass";
     private static final String KEY_DB_SCHEME = "db.scheme";
@@ -31,6 +32,7 @@ public class Driver extends Configured implements Tool {
     private static final String KEY_DB_PASSWORD = "db.password";
     private static final String KEY_DB_TABLENAME = "db.tablename";
     private static final String KEY_HADOOP_JOBNAME = "hadoop.jobname";
+    private static final String KEY_HADOOP_NUM_REDUCERS = "hadoop.numreducers";
 
     private static final String[] DB_FIELDS = {
         "CC1",
@@ -62,7 +64,10 @@ public class Driver extends Configured implements Tool {
         String dbUrl = new URI(String.format("%s://%s:%d/%s", dbScheme, dbHost, dbPort, dbDatabase)).toString();
         DBConfiguration.configureDB(conf, dbDriver, dbUrl, dbUser, dbPassword);
 
-        Job job = Job.getInstance(conf, userConf.getString(KEY_HADOOP_JOBNAME));
+        String jobName = userConf.getString(KEY_HADOOP_JOBNAME);
+        int numReducers = userConf.getInt(KEY_HADOOP_NUM_REDUCERS, DEFAULT_HADOOP_NUM_REDUCERS);
+
+        Job job = Job.getInstance(conf, jobName);
         DBOutputFormat.setOutput(job, dbTableName, DB_FIELDS);
         job.setOutputFormatClass(DBOutputFormat.class);
         job.setInputFormatClass(NLineInputFormat.class);
@@ -73,6 +78,7 @@ public class Driver extends Configured implements Tool {
         job.setJarByClass(Driver.class);
         job.setMapperClass(ConceptMapper.class);
         job.setReducerClass(ConceptReducer.class);
+        job.setNumReduceTasks(numReducers);
         return job.waitForCompletion(true) ? 0 : 1;
 
     }
