@@ -5,7 +5,6 @@
  */
 package org.knoesis.semmed.concept.inputformat;
 
-import java.io.IOException;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -19,7 +18,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
  *
  * @author shreyansh
  */
-public class NLineInputFormat extends FileInputFormat<NullWritable, Text> {
+public class SemMedInputFormat extends FileInputFormat<NullWritable, Text> {
 
     @Override
     public boolean isSplitable(JobContext context, Path filename) {
@@ -28,6 +27,7 @@ public class NLineInputFormat extends FileInputFormat<NullWritable, Text> {
 
     @Override
     public RecordReader<NullWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context) {
-        return new NLineReader();
+        return new SemMedRecordReader();
     }
+
 }
