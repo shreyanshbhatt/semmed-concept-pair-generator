@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <db>
+        <driverclass>com.mysql.jdbc.Driver</driverclass>
+        <database>mydatabase</database>
+        <user>myusername</user>
+        <password>mypassword</password>
+    </db>
+</config>
