@@ -5,9 +5,12 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.db.DBConfiguration;
 import org.apache.hadoop.mapreduce.lib.db.DBOutputFormat;
+import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -45,7 +48,7 @@ public class Driver extends Configured implements Tool {
             throw new ConfigurationException("Configuration XML not specified.");
         }
 
-        org.apache.commons.configuration.Configuration userConf = new XMLConfiguration(args[0]);
+        XMLConfiguration userConf = new XMLConfiguration(args[0]);
         String dbDriver = userConf.getString(KEY_DB_DRIVER, DEFAULT_DB_DRIVER);
         String dbScheme = userConf.getString(KEY_DB_SCHEME, DEFAULT_DB_SCHEME);
         String dbHost = userConf.getString(KEY_DB_HOST, DEFAULT_DB_HOST);
@@ -57,12 +60,21 @@ public class Driver extends Configured implements Tool {
 
         Configuration conf = getConf();
         String dbUrl = new URI(String.format("%s://%s:%d/%s", dbScheme, dbHost, dbPort, dbDatabase)).toString();
-        Job job = Job.getInstance(conf, userConf.getString(KEY_HADOOP_JOBNAME));
-        job.setOutputFormatClass(DBOutputFormat.class);
-        DBOutputFormat.setOutput(job, dbTableName, DB_FIELDS);
         DBConfiguration.configureDB(conf, dbDriver, dbUrl, dbUser, dbPassword);
 
-        return 0;
+        Job job = Job.getInstance(conf, userConf.getString(KEY_HADOOP_JOBNAME));
+        DBOutputFormat.setOutput(job, dbTableName, DB_FIELDS);
+        job.setOutputFormatClass(DBOutputFormat.class);
+        job.setInputFormatClass(NLineInputFormat.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(ConceptCoocurrence.class);
+        job.setOutputKeyClass(ConceptCoocurrence.class);
+        job.setOutputValueClass(NullWritable.class);
+        job.setJarByClass(Driver.class);
+        job.setMapperClass(ConceptMapper.class);
+
+        return job.waitForCompletion(true) ? 0 : 1;
+
     }
 
 }
