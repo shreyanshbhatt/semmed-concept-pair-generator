@@ -72,7 +72,7 @@ public class Driver extends Configured implements Tool {
         job.setOutputValueClass(NullWritable.class);
         job.setJarByClass(Driver.class);
         job.setMapperClass(ConceptMapper.class);
-
+        job.setReducerClass(ConceptReducer.class);
         return job.waitForCompletion(true) ? 0 : 1;
 
     }
