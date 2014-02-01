@@ -30,12 +30,21 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
         }
 
         for (i = 0; i < lines.length; i++) {
+            String[] splits1 = lines[i].split("\\|");
+            if(!splits1[5].equals("entity")) {
+                continue;
+            }
             for (int j = i; j < lines.length; j++) {
                 if (i == j) {
                     continue;
                 }
-                String[] splits1 = lines[i].split("\\|");
+          
                 String[] splits2 = lines[j].split("\\|");
+                
+                if(!splits2[5].equals("entity")) {
+                    continue;
+                }
+                
                 String pmid = splits1[1];
                 String geneid1 = splits1[9];
                 String geneid2 = splits2[9];
