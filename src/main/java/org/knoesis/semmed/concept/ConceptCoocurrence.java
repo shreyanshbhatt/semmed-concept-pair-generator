@@ -21,11 +21,14 @@ import org.apache.hadoop.mapreduce.lib.db.DBWritable;
 public class ConceptCoocurrence implements DBWritable, WritableComparable<ConceptCoocurrence> {
 
     private String pmid;
-    private String sentenceId;
+    private int sentenceId;
     private String firstConcept;
     private String secondConcept;
 
-    public ConceptCoocurrence(String pmid, String sentenceId, String firstConcept, String secondConcept) {
+    public ConceptCoocurrence() {
+    }
+
+    public ConceptCoocurrence(String pmid, int sentenceId, String firstConcept, String secondConcept) {
         this.pmid = pmid;
         this.sentenceId = sentenceId;
         this.firstConcept = firstConcept;
@@ -34,28 +37,28 @@ public class ConceptCoocurrence implements DBWritable, WritableComparable<Concep
 
     public void write(PreparedStatement statement) throws SQLException {
         statement.setString(1, pmid);
-        statement.setString(2, sentenceId);
+        statement.setInt(2, sentenceId);
         statement.setString(3, firstConcept);
         statement.setString(4, secondConcept);
     }
 
     public void readFields(ResultSet resultSet) throws SQLException {
         pmid = resultSet.getString(1);
-        sentenceId = resultSet.getString(2);
+        sentenceId = resultSet.getInt(2);
         firstConcept = resultSet.getString(3);
         secondConcept = resultSet.getString(4);
     }
 
     public void write(DataOutput out) throws IOException {
         out.writeUTF(pmid);
-        out.writeUTF(sentenceId);
+        out.writeInt(sentenceId);
         out.writeUTF(firstConcept);
         out.writeUTF(secondConcept);
     }
 
     public void readFields(DataInput in) throws IOException {
         pmid = in.readUTF();
-        sentenceId = in.readUTF();
+        sentenceId = in.readInt();
         firstConcept = in.readUTF();
         secondConcept = in.readUTF();
     }
@@ -65,9 +68,10 @@ public class ConceptCoocurrence implements DBWritable, WritableComparable<Concep
         if (c != 0) {
             return c;
         }
-        c = sentenceId.compareTo(o.sentenceId);
-        if (c != 0) {
-            return c;
+        if (sentenceId < o.sentenceId) {
+            return -1;
+        } else if (sentenceId > o.sentenceId) {
+            return 1;
         }
         c = firstConcept.compareTo(o.firstConcept);
         if (c != 0) {
