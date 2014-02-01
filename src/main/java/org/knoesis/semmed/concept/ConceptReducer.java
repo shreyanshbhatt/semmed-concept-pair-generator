@@ -17,7 +17,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 public class ConceptReducer extends Reducer<Text, ConceptCoocurrence, ConceptCoocurrence, NullWritable> {
 
     @Override
-    protected void reduce(Text key, Iterable<ConceptCoocurrence> values, Context context) throws IOException, InterruptedException {
+    public void reduce(Text key, Iterable<ConceptCoocurrence> values, Context context) throws IOException, InterruptedException {
         for (ConceptCoocurrence cooccurrence : values) {
             context.write(cooccurrence, null);
         }
