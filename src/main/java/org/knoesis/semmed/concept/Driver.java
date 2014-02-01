@@ -5,14 +5,16 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.db.DBConfiguration;
 import org.apache.hadoop.mapreduce.lib.db.DBOutputFormat;
-import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.knoesis.semmed.concept.inputformat.SemMedInputFormat;
 
 public class Driver extends Configured implements Tool {
 
@@ -33,12 +35,13 @@ public class Driver extends Configured implements Tool {
     private static final String KEY_DB_TABLENAME = "db.tablename";
     private static final String KEY_HADOOP_JOBNAME = "hadoop.jobname";
     private static final String KEY_HADOOP_NUM_REDUCERS = "hadoop.numreducers";
+    private static final String KEY_HADOOP_INPUT_DIR = "hadoop.inputdir";
 
     private static final String[] DB_FIELDS = {
-        "CC1",
-        "CC2",
         "PMID",
-        "SID"
+        "SID",
+        "s_cui",
+        "o_cui"
     };
 
     public static void main(String[] args) throws Exception {
@@ -66,11 +69,13 @@ public class Driver extends Configured implements Tool {
 
         String jobName = userConf.getString(KEY_HADOOP_JOBNAME);
         int numReducers = userConf.getInt(KEY_HADOOP_NUM_REDUCERS, DEFAULT_HADOOP_NUM_REDUCERS);
+        String inputDir = userConf.getString(KEY_HADOOP_INPUT_DIR);
 
         Job job = Job.getInstance(conf, jobName);
+        FileInputFormat.addInputPath(job, new Path(inputDir));
         DBOutputFormat.setOutput(job, dbTableName, DB_FIELDS);
         job.setOutputFormatClass(DBOutputFormat.class);
-        job.setInputFormatClass(NLineInputFormat.class);
+        job.setInputFormatClass(SemMedInputFormat.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(ConceptCoocurrence.class);
         job.setOutputKeyClass(ConceptCoocurrence.class);

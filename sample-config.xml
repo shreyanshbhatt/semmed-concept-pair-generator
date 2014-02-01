@@ -13,5 +13,6 @@
     <hadoop>
         <jobname>myjobname</jobname>
         <numreducers>8</numreducers>
+        <inputdir>/mydir</inputdir>
     </hadoop>
 </config>
