@@ -16,10 +16,12 @@ import org.apache.hadoop.mapreduce.Reducer;
  */
 public class ConceptReducer extends Reducer<Text, ConceptCoocurrence, ConceptCoocurrence, NullWritable> {
 
+    private static final NullWritable NULL = NullWritable.get();
+    
     @Override
     public void reduce(Text key, Iterable<ConceptCoocurrence> values, Context context) throws IOException, InterruptedException {
         for (ConceptCoocurrence cooccurrence : values) {
-            context.write(cooccurrence, null);
+            context.write(cooccurrence, NULL);
         }
     }
 
