@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.knoesis.semmed.concept.inputformat;
 
 import org.apache.hadoop.fs.Path;
@@ -14,10 +9,6 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 
-/**
- *
- * @author shreyansh
- */
 public class SemMedInputFormat extends FileInputFormat<NullWritable, Text> {
 
     @Override

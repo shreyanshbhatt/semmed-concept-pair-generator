@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.knoesis.semmed.concept;
 
 import java.io.DataInput;
@@ -14,10 +9,6 @@ import java.sql.SQLException;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapreduce.lib.db.DBWritable;
 
-/**
- *
- * @author alan
- */
 public class ConceptCoocurrence implements DBWritable, WritableComparable<ConceptCoocurrence> {
 
     private String pmid;
