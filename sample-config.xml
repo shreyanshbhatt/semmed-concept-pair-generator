@@ -1,18 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
+    
+    <!-- database-related configuration -->
     <db>
+        <!-- fully qualified class name of the JDBC driver to use.
+             to use a different driver, you must specify the jar when running 
+             this application using -libjars /path/to/mydriver.jar
+             default: "com.mysql.jdbc.Driver" (included, no need to add to 
+             -libjars) -->
         <driverclass>com.mysql.jdbc.Driver</driverclass>
+        
+        <!-- string for the "scheme" part of a jdbc connection string,
+             (e.g. scheme://...) default: "jdbc:mysql" (for the included 
+             driver) -->
         <scheme>jdbc:mysql</scheme>
+        
+        <!-- database host (default: localhost) -->
         <host>localhost</host>
+        
+        <!-- database port (default: 3306) -->
         <port>3306</port>
+        
+        <!-- name of database that contains output table -->
         <database>mydatabase</database>
+        
+        <!-- db username -->
         <user>myusername</user>
+        
+        <!-- db password -->
         <password>mypassword</password>
-        <tablename>CONCEPT_AGGREGATION</tablename>
+        
+        <!-- name of output table, which must exist and have exactly four 
+             columns, arbitrarily named, but capable of storing types in the 
+             following order:
+                 String (for PMID)
+                 Integer (for Sentence ID)
+                 String (for Concept1 GeneID/CUI)
+                 String (for Concept2 GeneID/CUI) -->
+        <tablename>CONCEPT_AGGREGATE</tablename>
     </db>
+    
+    <!-- hadoop-related configuration -->
     <hadoop>
-        <jobname>myjobname</jobname>
-        <numreducers>8</numreducers>
-        <inputdir>/mydir</inputdir>
+        <!-- name of the MapReduce job to be submitted -->
+        <jobname>concept-pair-generator</jobname>
+        
+        <!-- override the framework-determined number of reducers, since each 
+             reducer will create its own connection to the database and batch 
+             insert all results in a transaction -->
+        <numreducers>32</numreducers>
+        
+        <!-- comma-separated list of HDFS input paths to process -->
+        <inputdirs>/input</inputdirs>
     </hadoop>
 </config>
