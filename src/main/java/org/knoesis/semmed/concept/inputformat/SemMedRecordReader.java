@@ -18,6 +18,8 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.LineRecordReader;
 
 class SemMedRecordReader extends RecordReader<NullWritable, Text> {
+    
+    private static final NullWritable NULL = NullWritable.get();
 
     private final LineRecordReader lineReader = new LineRecordReader();
     private final Text value = new Text();
@@ -35,9 +37,10 @@ class SemMedRecordReader extends RecordReader<NullWritable, Text> {
             return false;
         }
         String line = lineReader.getCurrentValue().toString();
-        StringBuilder sb = new StringBuilder(line).append("\n");
-        while ((more = lineReader.nextKeyValue()) && !(line = lineReader.getCurrentValue().toString()).isEmpty()) {
-            sb.append(line).append("\n");
+        StringBuilder sb = new StringBuilder(line);
+        while ((more = lineReader.nextKeyValue()) 
+                && !(line = lineReader.getCurrentValue().toString()).isEmpty()) {
+            sb.append("\n").append(line);
         }
         value.set(sb.toString());
         if (more) {
@@ -48,7 +51,7 @@ class SemMedRecordReader extends RecordReader<NullWritable, Text> {
 
     @Override
     public NullWritable getCurrentKey() throws IOException, InterruptedException {
-        return NullWritable.get();
+        return NULL;
     }
 
     @Override
