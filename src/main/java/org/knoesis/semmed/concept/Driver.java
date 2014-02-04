@@ -64,12 +64,12 @@ public class Driver extends Configured implements Tool {
         String jobName = xmlConf.getString(KEY_HADOOP_JOBNAME, "");
         int numReducers = xmlConf.getInt(KEY_HADOOP_NUM_REDUCERS, DEFAULT_NUM_REDUCERS);
         String inputDirs = xmlConf.getString(KEY_HADOOP_INPUT_DIRS);
- 
+
         Job job = Job.getInstance(conf);
-        
+
         FileInputFormat.setInputPaths(job, inputDirs);
         DBOutputFormat.setOutput(job, dbTableName, NUM_DB_FIELDS);
-        
+
         if (!jobName.isEmpty()) {
             job.setJobName(jobName);
         }
@@ -82,11 +82,11 @@ public class Driver extends Configured implements Tool {
         job.setOutputValueClass(NullWritable.class);
         job.setMapperClass(ConceptMapper.class);
         job.setReducerClass(ConceptReducer.class);
-        
+
         if (numReducers > 0) {
             job.setNumReduceTasks(numReducers);
         }
-        
+
         return job.waitForCompletion(true) ? 0 : 1;
     }
 

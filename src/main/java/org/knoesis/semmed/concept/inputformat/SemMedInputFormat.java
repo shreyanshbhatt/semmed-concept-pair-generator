@@ -13,7 +13,7 @@ public class SemMedInputFormat extends FileInputFormat<NullWritable, Text> {
 
     @Override
     public boolean isSplitable(JobContext context, Path filename) {
-        return false;
+        return true;
     }
 
     @Override

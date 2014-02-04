@@ -8,8 +8,8 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.LineRecordReader;
 
-class SemMedRecordReader extends RecordReader<NullWritable, Text> {
-    
+public class SemMedRecordReader extends RecordReader<NullWritable, Text> {
+
     private static final NullWritable NULL = NullWritable.get();
 
     private final LineRecordReader lineReader = new LineRecordReader();
@@ -29,7 +29,7 @@ class SemMedRecordReader extends RecordReader<NullWritable, Text> {
         }
         String line = lineReader.getCurrentValue().toString();
         StringBuilder sb = new StringBuilder(line);
-        while ((more = lineReader.nextKeyValue()) 
+        while ((more = lineReader.nextKeyValue())
                 && !(line = lineReader.getCurrentValue().toString()).isEmpty()) {
             sb.append("\n").append(line);
         }
