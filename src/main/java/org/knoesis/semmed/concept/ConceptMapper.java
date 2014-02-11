@@ -76,7 +76,11 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
                 int sentenceid = Integer.parseInt(splits1[4]);
 
                 if (filter != null) {
-                    pairKey.set(cui1.toLowerCase() + "|" + cui2.toLowerCase());
+                    if (cui1.toLowerCase().compareTo(cui2.toLowerCase()) > 0) {
+                        pairKey.set(cui1.toLowerCase() + "|" + cui2.toLowerCase());
+                    } else {
+                        pairKey.set(cui2.toLowerCase() + "|" + cui1.toLowerCase());
+                    }
                     if (filter.get(pairKey) == null) {
                         continue;
                     }
