@@ -91,8 +91,8 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
         if (filter != null) {
             try {
                 filter.close();
-            } catch(IOException ex) {
-                LOG.log(Level.WARNING, "Unable to close path filter reader", ex);
+            } catch (IOException ex) {
+                LOG.log(Level.WARNING, "Unable to close pair filter reader", ex);
             }
         }
         super.cleanup(context);

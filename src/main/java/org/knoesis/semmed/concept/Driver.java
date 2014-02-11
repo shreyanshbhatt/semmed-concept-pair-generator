@@ -35,7 +35,7 @@ public class Driver extends Configured implements Tool {
     private static final String KEY_HADOOP_JOBNAME = "hadoop.jobname";
     private static final String KEY_HADOOP_NUM_REDUCERS = "hadoop.numreducers";
     private static final String KEY_HADOOP_INPUT_DIRS = "hadoop.inputdirs";
-    private static final String KEY_HADOOP_PAIR_FILTER_DIR = "hadoop.pairfilter";
+    private static final String KEY_HADOOP_PAIR_FILTER_DIR = "hadoop.pairfilterdir";
 
     private static final int NUM_DB_FIELDS = 4;
 
