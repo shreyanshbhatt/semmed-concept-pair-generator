@@ -5,6 +5,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -34,6 +35,7 @@ public class Driver extends Configured implements Tool {
     private static final String KEY_HADOOP_JOBNAME = "hadoop.jobname";
     private static final String KEY_HADOOP_NUM_REDUCERS = "hadoop.numreducers";
     private static final String KEY_HADOOP_INPUT_DIRS = "hadoop.inputdirs";
+    private static final String KEY_HADOOP_PAIR_FILTER_DIR = "hadoop.pairfilter";
 
     private static final int NUM_DB_FIELDS = 4;
 
@@ -64,6 +66,7 @@ public class Driver extends Configured implements Tool {
         String jobName = xmlConf.getString(KEY_HADOOP_JOBNAME, "");
         int numReducers = xmlConf.getInt(KEY_HADOOP_NUM_REDUCERS, DEFAULT_NUM_REDUCERS);
         String inputDirs = xmlConf.getString(KEY_HADOOP_INPUT_DIRS);
+        String filterDir = xmlConf.getString(KEY_HADOOP_PAIR_FILTER_DIR);
 
         Job job = Job.getInstance(conf);
 
@@ -82,6 +85,7 @@ public class Driver extends Configured implements Tool {
         job.setOutputValueClass(NullWritable.class);
         job.setMapperClass(ConceptMapper.class);
         job.setReducerClass(ConceptReducer.class);
+        job.getConfiguration().set(ConceptMapper.FILTER_DIR, filterDir);
 
         if (numReducers > 0) {
             job.setNumReduceTasks(numReducers);
