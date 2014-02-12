@@ -1,4 +1,4 @@
-package org.knoesis.semmed.concept.inputformat;
+package org.knoesis.semmed.concept.input;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;

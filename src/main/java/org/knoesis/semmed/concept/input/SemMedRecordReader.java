@@ -1,4 +1,4 @@
-package org.knoesis.semmed.concept.inputformat;
+package org.knoesis.semmed.concept.input;
 
 import java.io.IOException;
 import org.apache.hadoop.io.Text;
