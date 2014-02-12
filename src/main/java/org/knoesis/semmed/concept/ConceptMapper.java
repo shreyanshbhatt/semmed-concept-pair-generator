@@ -2,39 +2,23 @@ package org.knoesis.semmed.concept;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.SetFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.knoesis.semmed.concept.pairfilter.PairFilter;
+import org.knoesis.semmed.concept.pairfilter.UMLSPairFilter;
 
 public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocurrence> {
 
-    public static final String FILTER_DIR = "org.knoesis.semmed.concept.FILTER_DIR";
-
-    private static final Logger LOG = Logger.getLogger(ConceptMapper.class.getName());
-
     private final Text pmid = new Text();
-    private final Text pairKey = new Text();
-    private SetFile.Reader filter = null;
+    private PairFilter filter;
 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         super.setup(context);
         Configuration conf = context.getConfiguration();
-        String filterDirPath = conf.get(FILTER_DIR);
-        if (filterDirPath != null && !"".equals(filterDirPath)) {
-            try {
-                filter = new SetFile.Reader(FileSystem.get(conf), filterDirPath, conf);
-            } catch (IOException ex) {
-                LOG.log(Level.WARNING, "Could not read specified pair filter path: accepting all concept pairs", ex);
-            }
-        } else {
-            LOG.warning("Pair filter path not specified in config XML: accepting all concept pairs");
-        }
+        filter = UMLSPairFilter.get(conf);
     }
 
     @Override
@@ -71,37 +55,25 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
                 pmid.set(splits1[1]);
                 String geneid1 = splits1[9];
                 String geneid2 = splits2[9];
-                String cui1 = geneid1.isEmpty() ? splits1[6] : geneid1;
-                String cui2 = geneid2.isEmpty() ? splits2[6] : geneid2;
-                int sentenceid = Integer.parseInt(splits1[4]);
+                String cui1 = splits1[6];
+                String cui2 = splits2[6];
+                int sentenceid1 = Integer.parseInt(splits1[4]);
+                int sentenceid2 = Integer.parseInt(splits2[4]);
 
-                if (filter != null) {
-                    if (cui1.toLowerCase().compareTo(cui2.toLowerCase()) > 0) {
-                        pairKey.set(cui1.toLowerCase() + "|" + cui2.toLowerCase());
-                    } else {
-                        pairKey.set(cui2.toLowerCase() + "|" + cui1.toLowerCase());
-                    }
-                    if (filter.get(pairKey) == null) {
-                        continue;
-                    }
+                if (filter.accept(cui1, cui2)) {
+                    context.write(pmid, new ConceptCoocurrence(pmid.toString(),
+                            sentenceid1, sentenceid2,
+                            geneid1.isEmpty() ? cui1 : geneid1,
+                            geneid2.isEmpty() ? cui2 : geneid2));
                 }
-                context.write(pmid, new ConceptCoocurrence(pmid.toString(), sentenceid, cui1, cui2));
             }
         }
     }
 
     @Override
     protected void cleanup(Context context) throws IOException, InterruptedException {
-        if (filter != null) {
-            try {
-                filter.close();
-            } catch (IOException ex) {
-                LOG.log(Level.WARNING, "Unable to close pair filter reader", ex);
-            }
-        }
+        filter.close();
         super.cleanup(context);
     }
-
-
 
 }

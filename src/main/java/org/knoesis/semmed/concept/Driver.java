@@ -5,7 +5,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -14,7 +13,8 @@ import org.apache.hadoop.mapreduce.lib.db.DBOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.knoesis.semmed.concept.inputformat.SemMedInputFormat;
+import org.knoesis.semmed.concept.input.SemMedInputFormat;
+import org.knoesis.semmed.concept.pairfilter.PairFilter;
 
 public class Driver extends Configured implements Tool {
 
@@ -85,7 +85,7 @@ public class Driver extends Configured implements Tool {
         job.setOutputValueClass(NullWritable.class);
         job.setMapperClass(ConceptMapper.class);
         job.setReducerClass(ConceptReducer.class);
-        job.getConfiguration().set(ConceptMapper.FILTER_DIR, filterDir);
+        job.getConfiguration().set(PairFilter.FILTER_DIR, filterDir);
 
         if (numReducers > 0) {
             job.setNumReduceTasks(numReducers);

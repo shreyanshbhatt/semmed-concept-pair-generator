@@ -62,6 +62,6 @@
              That is, all lowercase, with concept names sorted lexographically,
              separated by the pipe "|" character.
              (default: accept all pairs) -->
-        <pairfilterdir>/semmed-pair-filter-setfile</pairfilterdir>
+        <pairfilterdir>semmed-pair-filter.set</pairfilterdir>
     </hadoop>
 </config>
