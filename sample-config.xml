@@ -56,8 +56,8 @@
         <!-- hdfs path to the pair filter directory, which includes entries for
              all permissible pairs of concepts. the expected directory format is
              one created by org.apache.hadoop.io.SetFile.Writer with keyClass
-             org.apache.hadoop.io.Text. the Text value has the following must
-             have the following format:
+             org.apache.hadoop.io.Text. the Text value must have the following
+             format:
                  concept1|concept2
              That is, all lowercase, with concept names sorted lexographically,
              separated by the pipe "|" character.

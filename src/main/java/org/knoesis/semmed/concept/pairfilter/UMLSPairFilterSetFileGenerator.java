@@ -11,7 +11,7 @@ import org.apache.hadoop.io.Text;
 
 public class UMLSPairFilterSetFileGenerator {
 
-    private static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
         String uri = args[0];
         Configuration conf = new Configuration();
@@ -20,7 +20,7 @@ public class UMLSPairFilterSetFileGenerator {
         SetFile.Writer writer = null;
         try {
             writer = new SetFile.Writer(conf, fs, uri, item.getClass(), SequenceFile.CompressionType.NONE);
-            
+
         } finally {
             IOUtils.closeStream(writer);
         }
