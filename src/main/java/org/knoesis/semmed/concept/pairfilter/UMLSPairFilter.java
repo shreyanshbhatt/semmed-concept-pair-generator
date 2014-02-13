@@ -20,13 +20,13 @@ public class UMLSPairFilter implements PairFilter {
         set = new SetFile.Reader(FileSystem.get(conf), conf.get(FILTER_DIR), conf);
     }
 
-    public boolean accept(String concept1, String concept2) {
-        concept1 = concept1.toLowerCase();
-        concept2 = concept2.toLowerCase();
-        if (concept1.compareTo(concept2) < 0) {
-            value.set(concept1 + "|" + concept2);
+    public boolean accept(String semType1, String semType2) {
+        semType1 = semType1.toLowerCase();
+        semType2 = semType2.toLowerCase();
+        if (semType1.compareTo(semType2) < 0) {
+            value.set(semType1 + "|" + semType2);
         } else {
-            value.set(concept2 + "|" + concept1);
+            value.set(semType2 + "|" + semType1);
         }
         try {
             return set.get(value) != null;

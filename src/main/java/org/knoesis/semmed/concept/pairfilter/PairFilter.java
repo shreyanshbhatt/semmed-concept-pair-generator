@@ -4,7 +4,7 @@ public interface PairFilter {
 
     String FILTER_DIR = "org.knoesis.semmed.concept.FILTER_DIR";
 
-    boolean accept(String semanticType1, String semanticType2);
+    boolean accept(String semType1, String semType2);
     void close();
 
 }
