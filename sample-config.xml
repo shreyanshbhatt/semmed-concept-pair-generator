@@ -53,9 +53,6 @@
         <!-- comma-separated list of HDFS input paths to process -->
         <inputdirs>/input</inputdirs>
 
-        <!-- output directory -->
-        <outputdir>/output</outputdir>
-
         <!-- hdfs path to the pair filter directory, which includes entries for
              all permissible pairs of concepts. the expected directory format is
              one created by org.apache.hadoop.io.SetFile.Writer with keyClass
