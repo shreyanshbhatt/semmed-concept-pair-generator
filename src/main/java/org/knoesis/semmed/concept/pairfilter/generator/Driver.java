@@ -47,7 +47,8 @@ public class Driver extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(NullWritable.class);
 
-        // important, since we want a single SetFile (directory) instead of one per reducer
+        // important, since we want total ordering and a single SetFile (directory)
+        //      instead of one per reducer
         job.setNumReduceTasks(1);
 
         TextInputFormat.setInputPaths(job, inputDirs);
