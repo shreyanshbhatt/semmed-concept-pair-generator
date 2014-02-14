@@ -30,18 +30,26 @@
         <!-- db password -->
         <password>mypassword</password>
 
-        <!-- name of output table, which must exist and have exactly four
+        <!-- name of output table, which must exist and have exactly five
              columns, arbitrarily named, but capable of storing types in the
              following order:
                  String (for PMID)
-                 Integer (for Sentence ID)
                  String (for Concept1 GeneID/CUI)
-                 String (for Concept2 GeneID/CUI) -->
+                 Integer (for Sentence ID of Concept1)
+                 String (for Concept2 GeneID/CUI)
+                 Integer (for Sentence ID of Concept2) -->
         <tablename>CONCEPT_AGGREGATE</tablename>
     </db>
 
     <!-- hadoop-related configuration -->
     <hadoop>
+
+        <!-- defines whether or not output should be written to database rather
+             rather than to an HDFS file (false here requires "db" element
+             above, true here requires outputdir in this ["hadoop"] element)
+             default: false -->
+        <dboutput>false</dboutput>
+
         <!-- name of the MapReduce job to be submitted -->
         <jobname>concept-pair-generator</jobname>
 
@@ -52,6 +60,10 @@
 
         <!-- comma-separated list of HDFS input paths to process -->
         <inputdirs>/input</inputdirs>
+
+        <!-- hdfs path to directory to store output file (ignored if dboutput
+             is true) -->
+        <outputdir>/output</outputdir>
 
         <!-- hdfs path to the pair filter directory, which includes entries for
              all permissible pairs of concepts. the expected directory format is

@@ -62,9 +62,10 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
 
                 if (filter.accept(cui1, cui2)) {
                     context.write(pmid, new ConceptCoocurrence(pmid.toString(),
-                            sentenceid1, sentenceid2,
                             geneid1.isEmpty() ? cui1 : geneid1,
-                            geneid2.isEmpty() ? cui2 : geneid2));
+                            sentenceid1,
+                            geneid2.isEmpty() ? cui2 : geneid2,
+                            sentenceid2));
                 }
             }
         }
