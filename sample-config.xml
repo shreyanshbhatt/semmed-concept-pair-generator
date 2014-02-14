@@ -53,10 +53,15 @@
         <!-- name of the MapReduce job to be submitted -->
         <jobname>concept-pair-generator</jobname>
 
-        <!-- override the framework-determined number of reducers, since each
+        <!-- specifies the number of reduce tasks to launch. note that each
              reducer will create its own connection to the database and batch
-             insert all results in a transaction -->
-        <numreducers>32</numreducers>
+             insert all results in a transaction. if using dboutput, setting
+             this value too low can cause the JVM to run out of memory, since
+             all records are batched before writing. since the final insert
+             transaction is long-running and the task is prone to being killed,
+             you may also try specifying a higher value for
+             -Dmapred.task.timeout -->
+        <numreducers>128</numreducers>
 
         <!-- comma-separated list of HDFS input paths to process -->
         <inputdirs>/input</inputdirs>

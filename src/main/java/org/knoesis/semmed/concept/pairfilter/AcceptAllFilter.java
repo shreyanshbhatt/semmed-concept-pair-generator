@@ -6,6 +6,6 @@ public class AcceptAllFilter implements PairFilter {
         return true;
     }
 
-    public void close(){};
+    public void close(){}
 
 }

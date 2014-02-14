@@ -99,7 +99,7 @@ public class Driver extends Configured implements Tool {
             job.setOutputFormatClass(TextOutputFormat.class);
             TextOutputFormat.setOutputPath(job, new Path(outputDir));
         }
-        
+
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
