@@ -45,8 +45,8 @@
     <hadoop>
 
         <!-- defines whether or not output should be written to database rather
-             rather than to an HDFS file (false here requires "db" element
-             above, true here requires outputdir in this ["hadoop"] element)
+             rather than to an HDFS file (true here requires "db" element
+             above, false here requires outputdir in this ["hadoop"] element)
              default: false -->
         <dboutput>false</dboutput>
 
