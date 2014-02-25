@@ -71,6 +71,7 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
                                     sentenceid1,
                                     geneid2.isEmpty() ? cui2 : geneid2,
                                     sentenceid2));
+                            break;
                         }
                     }
                 }
