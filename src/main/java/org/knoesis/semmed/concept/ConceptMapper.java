@@ -63,17 +63,24 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
                 // semantic type field may have multiple values (comma-separated)
                 String[] semTypes1 = splits1[8].split(",");
                 String[] semTypes2 = splits2[8].split(",");
+                boolean accepted = false;
                 for (String semType1 : semTypes1) {
+                    if (accepted) {
+                        break;
+                    }
                     for (String semType2 : semTypes2) {
                         if (filter.accept(semType1, semType2)) {
-                            context.write(pmid, new ConceptCoocurrence(pmid.toString(),
-                                    geneid1.isEmpty() ? cui1 : geneid1,
-                                    sentenceid1,
-                                    geneid2.isEmpty() ? cui2 : geneid2,
-                                    sentenceid2));
+                            accepted = true;
                             break;
                         }
                     }
+                }
+                if (accepted) {
+                    context.write(pmid, new ConceptCoocurrence(pmid.toString(),
+                            geneid1.isEmpty() ? cui1 : geneid1,
+                            sentenceid1,
+                            geneid2.isEmpty() ? cui2 : geneid2,
+                            sentenceid2));
                 }
             }
         }
