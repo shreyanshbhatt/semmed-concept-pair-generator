@@ -78,7 +78,9 @@ public class Driver extends Configured implements Tool {
         job.setOutputValueClass(NullWritable.class);
         job.setMapperClass(ConceptMapper.class);
         job.setReducerClass(ConceptReducer.class);
-        job.getConfiguration().set(PairFilter.FILTER_DIR, filterDir);
+        if (filterDir != null) {
+            job.getConfiguration().set(PairFilter.FILTER_DIR, filterDir);
+        }
 
         boolean outputToDB = xmlConf.getBoolean(KEY_HADOOP_DB_OUTPUT, DEFAULT_DB_OUTPUT);
         if (outputToDB) {

@@ -32,7 +32,7 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
             lines[i++] = st.nextToken();
         }
 
-        for (i = 0; i < lines.length; i++) {
+        for (i = 0; i < lines.length - 1; i++) {
             String[] splits1 = lines[i].split("\\|");
             if (splits1.length < 6) {
                 System.out.println("SHORT LINE: " + lines[i]);
