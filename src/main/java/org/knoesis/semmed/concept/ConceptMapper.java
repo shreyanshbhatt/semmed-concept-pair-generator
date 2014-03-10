@@ -57,6 +57,10 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
                 String geneid2 = splits2[9];
                 String cui1 = splits1[6];
                 String cui2 = splits2[6];
+                
+                String id1 = geneid1.isEmpty() ? cui1 : geneid1;
+                String id2 = geneid2.isEmpty() ? cui2 : geneid2;
+                
                 int sentenceid1 = Integer.parseInt(splits1[4]);
                 int sentenceid2 = Integer.parseInt(splits2[4]);
 
@@ -76,11 +80,15 @@ public class ConceptMapper extends Mapper<NullWritable, Text, Text, ConceptCoocu
                     }
                 }
                 if (accepted) {
-                    context.write(pmid, new ConceptCoocurrence(pmid.toString(),
-                            geneid1.isEmpty() ? cui1 : geneid1,
-                            sentenceid1,
-                            geneid2.isEmpty() ? cui2 : geneid2,
-                            sentenceid2));
+                    for (String firstId : id1.split(",")) {      // ID's (esp. gene ID's) have 
+                        for (String secondId : id2.split(",")) { // been observed as multivalued
+                            context.write(pmid, new ConceptCoocurrence(pmid.toString(),
+                                    firstId,
+                                    sentenceid1,
+                                    secondId,
+                                    sentenceid2));
+                        }
+                    }
                 }
             }
         }
